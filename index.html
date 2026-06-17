@@ -138,15 +138,11 @@
 <!-- ===== CHECKOUT MODAL ===== -->
 <div class="overlay" id="checkoutOverlay">
   <div class="modal">
-    <h2>📝 Complete Your Order</h2>
-    <label>Name</label>
-    <input type="text" id="custName" placeholder="Jane Doe" />
-    <label>Phone</label>
-    <input type="tel" id="custPhone" placeholder="416-555-1234" />
-    <label>Delivery Address</label>
-    <input type="text" id="custAddr" placeholder="123 King St W, Toronto" />
-    <label>Notes</label>
-    <textarea id="custNotes" placeholder="Extra sauce, no onions…"></textarea>
+<h2>📝 Complete Your Order</h2>
+<label>Name</label>
+<input type="text" id="custName" />
+<label>Notes</label>
+<textarea id="custNotes"></textarea>
     <div class="modal-actions">
       <button class="cancel" onclick="closeCheckout()">Cancel</button>
       <button class="confirm" onclick="placeOrder()">Place Order</button>
@@ -253,10 +249,35 @@ function openCheckout()  { document.getElementById('checkoutOverlay').classList.
 function closeCheckout() { document.getElementById('checkoutOverlay').classList.remove('active'); }
 function placeOrder() {
   const name = document.getElementById('custName').value.trim();
+  const notes = document.getElementById('custNotes').value.trim();
   if (!name) { alert('Please enter your name.'); return; }
-  alert(`✅ Thanks, ${name}! Your order has been placed.\n\nWe'll have it ready shortly!`);
+
+  // Build order details
+  let details = '';
+  let total = 0;
+  Object.keys(cart).forEach(k => {
+    const c = cart[k];
+    const sub = c.price * c.qty;
+    total += sub;
+    details += '• ' + c.name + ' x' + c.qty + ' — $' + sub.toFixed(2) + '\n';
+  });
+
+  // Build WhatsApp message
+  const message =
+    '🆕 *New Order!*\n\n' +
+    '👤 Name: ' + name + '\n' +
+    '📝 Notes: ' + (notes || 'None') + '\n\n' +
+    '🛒 *Order Details:*\n' + details + '\n' +
+    '💰 *Total: $' + total.toFixed(2) + '*';
+
+  // Open WhatsApp with pre-filled message
+  const yourNumber = '4373406679';  // ← replace with your number
+  window.open('https://wa.me/' + yourNumber + '?text=' + encodeURIComponent(message), '_blank');
+
+  alert('✅ Thanks, ' + name + '! Please send the message in WhatsApp to confirm your order.');
   cart = {}; renderCart(); closeCheckout();
-  ['custName','custPhone','custAddr','custNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('custName').value = '';
+  document.getElementById('custNotes').value = '';
 }
 </script>
 </body>
