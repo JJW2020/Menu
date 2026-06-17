@@ -362,7 +362,10 @@ function closeSummary() {
 }
 
 function sendWhatsApp() {
-  var yourNumber = '14373406679';
+  
+var p = [1,4,3,7,3,4,0,6,6,7,9];
+var yourNumber = p.join('')
+
   window.open('https://wa.me/' + yourNumber + '?text=' + encodeURIComponent(pendingMessage), '_blank');
 
   alert('Thanks, ' + pendingName + '! Please send the message in WhatsApp to confirm your order.');
