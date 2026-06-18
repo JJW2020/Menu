@@ -41,11 +41,8 @@ html = r"""<!DOCTYPE html>
     }
     .menu-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
     .menu-card img { width: 100%; height: 150px; object-fit: cover; }
-    .menu-card-body { padding: 14px; }
+    .menu-card-body { padding: 14px; display: flex; justify-content: space-between; align-items: center; }
     .menu-card-body h3 { font-size: 1rem; }
-    .menu-card-body .desc { font-size: .82rem; color: #777; margin: 4px 0 10px; }
-    .menu-card-body .bottom { display: flex; justify-content: space-between; align-items: center; }
-    .price { font-weight: 700; color: #ee5a24; font-size: 1.05rem; }
     .add-btn {
       background: #ee5a24; color: #fff; border: none; padding: 6px 14px;
       border-radius: 6px; cursor: pointer; font-size: .85rem; transition: background .2s;
@@ -66,10 +63,6 @@ html = r"""<!DOCTYPE html>
     }
     .qty-controls button:hover { background: #ddd; }
     .qty-controls span { display: inline-block; width: 22px; text-align: center; }
-    .cart-total {
-      margin-top: 14px; font-size: 1.1rem; font-weight: 700;
-      text-align: right; color: #ee5a24;
-    }
 
     .checkout-btn {
       width: 100%; margin-top: 14px; padding: 12px;
@@ -123,12 +116,6 @@ html = r"""<!DOCTYPE html>
     .summary-row:last-child { border-bottom: none; }
     .summary-row .item-name { flex: 1; }
     .summary-row .item-qty { width: 45px; text-align: center; color: #888; font-size: .85rem; }
-    .summary-row .item-price { min-width: 70px; text-align: right; font-weight: 600; }
-    .summary-total {
-      display: flex; justify-content: space-between; margin-top: 16px;
-      font-size: 1.2rem; font-weight: 700; color: #ee5a24;
-      border-top: 2px solid #ee5a24; padding-top: 12px;
-    }
     .send-btn {
       width: 100%; margin-top: 22px; padding: 14px;
       background: #0088cc; color: #fff; border: none; border-radius: 10px;
@@ -155,7 +142,7 @@ html = r"""<!DOCTYPE html>
 
 <header>
   <h1>&#127869;&#65039; 77JJ Bistro</h1>
-  <p>Food with Love & Joy!</p>
+  <p>Food with Love &amp; Joy!</p>
 </header>
 
 <div class="container">
@@ -163,7 +150,6 @@ html = r"""<!DOCTYPE html>
   <div class="cart-section">
     <h2>&#128722; Your Order</h2>
     <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
-    <div class="cart-total" id="cartTotal"></div>
     <button class="checkout-btn" id="checkoutBtn" disabled onclick="openCheckout()">Checkout</button>
   </div>
 </div>
@@ -188,7 +174,6 @@ html = r"""<!DOCTYPE html>
     <hr class="summary-divider" />
     <div class="summary-info" id="summaryInfo"></div>
     <div class="summary-section" id="summaryItems"></div>
-    <div class="summary-total" id="summaryTotal"></div>
     <button class="send-btn" onclick="sendOrder()">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.94 8.13l-2.17 10.24c-.16.72-.58.9-1.17.56l-3.25-2.4-1.57 1.51c-.17.17-.32.32-.66.32l.23-3.34 6.03-5.45c.26-.23-.06-.36-.41-.13L8.08 14.1l-3.2-1c-.7-.22-.71-.7.14-.97l12.5-4.82c.58-.22 1.09.14.9.97l-.48-.15z"/></svg>
       Send Order
@@ -199,23 +184,49 @@ html = r"""<!DOCTYPE html>
 
 <script>
 var menuData = [
-  { category: "&#127828; Burgers", items: [
-    { id:1,  name:"Classic Burger",    price:9.99,  desc:"Beef patty, lettuce, tomato, cheese", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop" },
-    { id:2,  name:"Chicken Burger",    price:10.49, desc:"Grilled chicken, avocado, ranch",      img:"https://images.unsplash.com/photo-1625813506062-0aeb1f7a8214?w=400&h=300&fit=crop" },
-    { id:3,  name:"Veggie Burger",     price:8.99,  desc:"Black bean patty, pickles, chipotle",  img:"https://images.unsplash.com/photo-1520072959219-c595dc870360?w=400&h=300&fit=crop" }
+  { category: "粉面", items: [
+    { id:1, name:"小炒蜡笔", img:"Image/南昌炒粉.png" },
+    { id:2, name:"鲜汤蜡笔", img:"Image/汤蜡笔.png" },
+    { id:3, name:"粉丝包菜", img:"Image/粉丝包菜.png" },
+    { id:4, name:"冷面",     img:"Image/巨冷面.png" }
   ]},
-  { category: "&#127829; Pizza", items: [
-    { id:4,  name:"Margherita",        price:12.99, desc:"Tomato, mozzarella, fresh basil",      img:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop" },
-    { id:5,  name:"Pepperoni",         price:13.99, desc:"Classic pepperoni with extra cheese",   img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&h=300&fit=crop" },
-    { id:6,  name:"BBQ Chicken",       price:14.49, desc:"BBQ sauce, chicken, red onion",         img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop" }
+  { category: "米饭", items: [
+    { id:5, name:"打抛飞猪饭", img:"Image/打抛飞猪饭.png" },
+    { id:6, name:"蛋炒饭",     img:"Image/蛋炒饭.png" },
+    { id:7, name:"农村蛋包饭", img:"Image/农村蛋包饭.png" },
+    { id:8, name:"咖喱猪排饭", img:"Image/咖喱猪排饭.png" }
   ]},
-  { category: "&#129367; Salads", items: [
-    { id:7,  name:"Caesar Salad",      price:7.99,  desc:"Romaine, parmesan, croutons",          img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop" },
-    { id:8,  name:"Greek Salad",       price:8.49,  desc:"Feta, olives, cucumber, tomato",       img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop" }
+  { category: "包子饺子", items: [
+    { id:9, name:"生猛酸菜大肉包", img:"Image/生猛酸菜大肉包.png" }
   ]},
-  { category: "&#129380; Drinks", items: [
-    { id:9,  name:"Iced Lemonade",     price:3.49,  desc:"Fresh-squeezed with mint",              img:"https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=400&h=300&fit=crop" },
-    { id:10, name:"Mango Smoothie",    price:5.49,  desc:"Mango, banana, yogurt",                 img:"https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400&h=300&fit=crop" }
+  { category: "家常菜", items: [
+    { id:10, name:"五颜六色烤蔬菜", img:"Image/五颜六色烤蔬菜.png" },
+    { id:11, name:"干煸巨虾",       img:"Image/干煸巨虾.png" },
+    { id:12, name:"炒蔬菜",         img:"Image/时令蔬菜.png" },
+    { id:13, name:"番茄炒蛋",       img:"Image/番茄炒蛋.png" },
+    { id:14, name:"韭菜炒蛋",       img:"Image/韭菜炒蛋.png" },
+    { id:15, name:"鱼香茄子",       img:"Image/鱼香茄子.png" },
+    { id:16, name:"鱼香鸡蛋",       img:"Image/鱼香鸡蛋.png" },
+    { id:17, name:"鹌鹑蛋烧排骨",   img:"Image/鹌鹑蛋烧排骨.png" }
+  ]},
+  { category: "东北菜", items: [
+    { id:18, name:"地三鲜", img:"Image/地三鲜.png" },
+    { id:19, name:"锅包肉", img:"Image/锅包肉.png" }
+  ]},
+  { category: "白人菜", items: [
+    { id:20, name:"法式红酒炖牛肉", img:"Image/法式红酒炖牛肉.png" },
+    { id:21, name:"意大利海鲜烩饭", img:"Image/海鲜烩饭.png" },
+    { id:22, name:"蘑菇白松露烩饭", img:"Image/蘑菇白松露烩饭.png" },
+    { id:23, name:"贪婪手工大比萨", img:"Image/贪婪手工大比萨.png" }
+  ]},
+  { category: "小食/汤", items: [
+    { id:24, name:"炸薯条",     img:"Image/炸薯条.png" },
+    { id:25, name:"炸藕盒",     img:"Image/炸藕盒.png" },
+    { id:26, name:"盐酥鸡",     img:"Image/盐酥鸡.png" },
+    { id:27, name:"鸡蛋肉饼汤", img:"Image/鸡蛋肉饼汤.png" }
+  ]},
+  { category: "水果", items: [
+    { id:28, name:"解腻大菠萝", img:"Image/解腻大菠萝.png" }
   ]}
 ];
 
@@ -232,11 +243,7 @@ menuData.forEach(function(cat) {
         '<img src="' + it.img + '" alt="' + it.name + '" loading="lazy" />' +
         '<div class="menu-card-body">' +
           '<h3>' + it.name + '</h3>' +
-          '<p class="desc">' + it.desc + '</p>' +
-          '<div class="bottom">' +
-            '<span class="price">$' + it.price.toFixed(2) + '</span>' +
-            '<button class="add-btn" onclick="addToCart(' + it.id + ')">+ Add</button>' +
-          '</div>' +
+          '<button class="add-btn" onclick="addToCart(' + it.id + ')">+ Add</button>' +
         '</div>' +
       '</div>';
   });
@@ -255,7 +262,7 @@ function addToCart(id) {
     cart[id].qty++;
   } else {
     var item = findItem(id);
-    cart[id] = { name: item.name, price: item.price, qty: 1 };
+    cart[id] = { name: item.name, qty: 1 };
   }
   renderCart();
 }
@@ -268,19 +275,16 @@ function changeQty(id, delta) {
 
 function renderCart() {
   var el = document.getElementById('cartItems');
-  var totalEl = document.getElementById('cartTotal');
   var btn = document.getElementById('checkoutBtn');
   var keys = Object.keys(cart);
   if (!keys.length) {
     el.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
-    totalEl.textContent = '';
     btn.disabled = true;
     return;
   }
-  var html = '', total = 0;
+  var html = '';
   keys.forEach(function(k) {
     var c = cart[k];
-    var sub = c.price * c.qty; total += sub;
     html +=
       '<div class="cart-item">' +
         '<span class="cart-item-name">' + c.name + '</span>' +
@@ -289,11 +293,9 @@ function renderCart() {
           '<span>' + c.qty + '</span>' +
           '<button onclick="changeQty(' + k + ',1)">+</button>' +
         '</div>' +
-        '<span style="min-width:58px;text-align:right">$' + sub.toFixed(2) + '</span>' +
       '</div>';
   });
   el.innerHTML = html;
-  totalEl.textContent = 'Total: $' + total.toFixed(2);
   btn.disabled = false;
 }
 
@@ -314,21 +316,15 @@ function showSummary() {
   document.getElementById('summaryInfo').innerHTML = infoHtml;
 
   var itemsHtml = '';
-  var total = 0;
   Object.keys(cart).forEach(function(k) {
     var c = cart[k];
-    var sub = c.price * c.qty;
-    total += sub;
     itemsHtml +=
       '<div class="summary-row">' +
         '<span class="item-name">' + c.name + '</span>' +
         '<span class="item-qty">x' + c.qty + '</span>' +
-        '<span class="item-price">$' + sub.toFixed(2) + '</span>' +
       '</div>';
   });
   document.getElementById('summaryItems').innerHTML = itemsHtml;
-  document.getElementById('summaryTotal').innerHTML =
-    '<span>Total</span><span>$' + total.toFixed(2) + '</span>';
 
   closeCheckout();
   document.getElementById('summaryOverlay').classList.add('active');
@@ -344,12 +340,9 @@ function sendOrder() {
   var chatId = '8911162706';
 
   var items = [];
-  var total = 0;
   Object.keys(cart).forEach(function(k) {
     var c = cart[k];
-    var sub = c.price * c.qty;
-    total += sub;
-    items.push(c.name + ' x' + c.qty + '  $' + sub.toFixed(2));
+    items.push(c.name + ' x' + c.qty);
   });
 
   var message =
@@ -360,8 +353,6 @@ function sendOrder() {
     '\n' +
     '--- Items ---\n' +
     items.join('\n') + '\n' +
-    '\n' +
-    'TOTAL: $' + total.toFixed(2) + '\n' +
     '--- END ---';
 
   fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
@@ -391,4 +382,3 @@ with open('index.html', 'w', encoding='utf-8') as f:
 
 print("index.html generated successfully!")
 print(f"File size: {len(html)} bytes")
-
